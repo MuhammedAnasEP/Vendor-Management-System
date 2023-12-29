@@ -7,10 +7,14 @@ from .views import (
     PurchaseOrderListCreateView,
     PurchaseOrderRetrieveUpdateDeleteView,
     VendorPerformanceView,
-    AcknowledgePurchaseOrderView
+    AcknowledgePurchaseOrderView,
+    CustomTokenRefreshView,
+    CustomTokenObtainPairView,
 )
 
 urlpatterns = [
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('register/', UserRegistrationView.as_view(), name='user-registration'),
     path('login/', UserLoginView.as_view(), name='user-login'),
     path('vendors/', VendorListCreateView.as_view(), name = 'vendor-list-create'),

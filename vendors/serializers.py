@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Vendor, PurchaseOrder
 from django.contrib.auth.models import User
-from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -14,13 +14,29 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
     
+class TokenObtainPairSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
-    
+class TokenRefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+
+        # Your authentication logic here to validate user credentials
+        user = authenticate(username=username, password=password)
+
+        if user:
+            data['user'] = user
+
+        return data
 
 
 class VendorSerializer(serializers.ModelSerializer):
